@@ -14,16 +14,16 @@
 		layer = raster::raster(layer)
 	if(missing(gisBase))
 		gisBase = getOption("gisBase")
-	rgrass7::initGRASS(gisBase, home=home, gisDbase = gisDbase, location = location,
+	rgrass::initGRASS(gisBase, home=home, gisDbase = gisDbase, location = location,
 					   mapset = mapset, override = TRUE)
 	proj = raster::wkt(layer)
 	err = tryCatch(
-		rgrass7::execGRASS("g.proj", flags = "c", wkt = "-", Sys_input = proj, intern=TRUE),
+		rgrass::execGRASS("g.proj", flags = "c", wkt = "-", Sys_input = proj, intern=TRUE),
 		error = function(e) stop(e),
 		warning = function(w) if(!grepl("file not found for location", w$message)) warning(w))
 	ext = as.character(as.vector(raster::extent(layer)))
 	rasres = as.character(raster::res(layer))
-	rgrass7::execGRASS("g.region", n = ext[4], s = ext[3], e = ext[2], w = ext[1],
+	rgrass::execGRASS("g.region", n = ext[4], s = ext[3], e = ext[2], w = ext[1],
 					   rows=raster::nrow(layer), cols=raster::ncol(layer), nsres = rasres[2],
 					   ewres = rasres[1])
 	.add_raster(layer, layer_name)
@@ -32,7 +32,7 @@
 #' Add a raster to grass
 #' @param x A [raster::raster] or [sp::SpatialGridDataFrame]
 #' @param name The name of the layer in grass
-#' @param flags Any flags to pass to [rgrass7::write_RAST]
+#' @param flags Any flags to pass to [rgrass::write_RAST]
 #' @param overwrite Should the file be overwritten if it exists
 #' @keywords internal
 .add_raster = function(x, name, flags, overwrite = TRUE) {
@@ -44,7 +44,7 @@
 		flags = list()
 	if(overwrite)
 		flags = c(flags, "overwrite")
-	rgrass7::write_RAST(x, name, flags = unlist(flags), verbose = FALSE)
+	rgrass::write_RAST(x, name, flags = unlist(flags), verbose = FALSE)
 	ws_env$rasters = c(ws_env$rasters, name)
 }
 
@@ -59,7 +59,7 @@
 #' @keywords internal
 .read_rasters = function(layers, file) {
 	ras = sapply(layers, function(l) {
-		suppressWarnings(val <- rgrass7::readRAST(l)) # proj warnings suppressed
+		suppressWarnings(val <- rgrass::readRAST(l)) # proj warnings suppressed
 		raster::raster(val)})
 	if(length(layers) > 1) {
 		ras = raster::stack(ras)
@@ -75,7 +75,7 @@
 #' @rdname read_rasters
 #' @keywords internal
 .read_vector = function(x) {
-	d <- capture.output(v <- rgrass7::readVECT(x)) ## this function is quite noisy
+	d <- capture.output(v <- rgrass::readVECT(x)) ## this function is quite noisy
 	sf::st_as_sf(v)
 }
 
@@ -97,9 +97,9 @@
 	if(!is.na(raster) && length(raster) > 0) {
 		# for(r in raster) {
 		# 	cat(r, "\n")
-		# 	rgrass7::execGRASS("g.remove", flags = c("f", "quiet"), type="raster", name=r)
+		# 	rgrass::execGRASS("g.remove", flags = c("f", "quiet"), type="raster", name=r)
 		# }
-		sapply(raster, function(r) rgrass7::execGRASS("g.remove", flags = c("f", "quiet"), 
+		sapply(raster, function(r) rgrass::execGRASS("g.remove", flags = c("f", "quiet"), 
 			type="raster", name=r))
 		if(length(raster) == length(ws_env$rasters)) {
 			ws_env$rasters = list()
@@ -109,7 +109,7 @@
 	}
 
 	if(!is.na(vector) && length(vector) > 0) {
-		sapply(vector, function(v) rgrass7::execGRASS("g.remove", flags = c("f", "quiet"), 
+		sapply(vector, function(v) rgrass::execGRASS("g.remove", flags = c("f", "quiet"), 
 			type="vector", name=v))
 		if(length(vector) == length(ws_env$vectors)) {
 			ws_env$vectors = list()

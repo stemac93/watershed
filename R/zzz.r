@@ -1,6 +1,7 @@
 .onLoad = function(libname, pkgname) {
 	Sys.setenv("GRASS_VERBOSE"=0)
-	rgrass7:use_sp()
+	library('rgrass')
+	rgrass:use_sp()
 
 	if(is.null(getOption("mc.cores")) && !grepl("[Ww]indows", Sys.info()['sysname'])) {
 		message("For faster performance of some functions on a machine with lots of RAM, you can set")
@@ -13,13 +14,6 @@
 	ws_env$vectors = list()
 
 	## Try to figure out where GRASS is located, warn the user if not found
-	gisBase = find_grass()
-	if(is.null(gisBase) | is.na(gisBase)) {
-		warning("Could not automatically detect GRASS, see ?find_grass")
-	} else {
-		message("Using grass: ", gisBase)
-		message("see ?find_grass to override this default")
-		options(gisBase = gisBase)
-	}
+	gisBase = "/Applications/GRASS-8.0.app/Contents/Resources"
 }
 

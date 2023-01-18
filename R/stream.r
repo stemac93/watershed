@@ -57,7 +57,7 @@ delineate = function(dem, threshold = 1e6, pretty = FALSE, file, outlet = NA, re
 	.start_grass(dem, elevation)
 
 	## perform computation
-	rgrass7::execGRASS("r.watershed", flags=flags, elevation=elevation, 
+	rgrass::execGRASS("r.watershed", flags=flags, elevation=elevation, 
 		threshold = threshold_cell, accumulation = accum, drainage = drainage, stream = stream)
 
 	# make sure to add the names of created rasters to the list of layers
@@ -179,10 +179,10 @@ vectorise_stream_old = function(x) {
 
 	flags = c("overwrite", "quiet")
 
-	rgrass7::execGRASS("r.thin", flags=flags, input=inpname, output = outname)
+	rgrass::execGRASS("r.thin", flags=flags, input=inpname, output = outname)
 	ws_env$rasters = c(ws_env$rasters, outname)
 
-	rgrass7::execGRASS("r.to.vect", flags=flags, input=outname, output = vectname,
+	rgrass::execGRASS("r.to.vect", flags=flags, input=outname, output = vectname,
 					   type="line", column="reach_id")
 	ws_env$vectors = c(ws_env$vectors, vectname)
 	vect = .read_vector(vectname)

@@ -92,7 +92,7 @@ catchment = function(x, type=c("outlet", "reach",  "points", "pixel"), y, area =
 #' * `.catchment` runs `.do_catchment` and then extracts and returns the raster from GRASS
 .catchment_area = function(y, out_name, drain_name) {
 	.do_catchment(y, out_name, drain_name)
-	res = capture.output(rgrass7::execGRASS("r.stats", flags=c("overwrite", "quiet", "a"), 
+	res = capture.output(rgrass::execGRASS("r.stats", flags=c("overwrite", "quiet", "a"), 
 		input = out_name))
 	.clean_grass(raster = out_name, vector = NA)
 	pat = "^1 ([0-9//.]+)"
@@ -113,7 +113,7 @@ catchment = function(x, type=c("outlet", "reach",  "points", "pixel"), y, area =
 #' @rdname catchment_area
 #' @keywords internal
 .do_catchment = function(y, out_name, drain_name) {
-	rgrass7::execGRASS("r.water.outlet", flags=c("overwrite", "quiet"), input=drain_name, 
+	rgrass::execGRASS("r.water.outlet", flags=c("overwrite", "quiet"), input=drain_name, 
 		output = out_name, coordinates = y)
 	if(!(out_name %in% ws_env$rasters))
 		ws_env$rasters = c(ws_env$rasters, out_name)

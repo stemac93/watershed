@@ -59,7 +59,6 @@
 #' @keywords internal
 .read_rasters = function(layers, file) {
 	ras = sapply(layers, function(l) {
-		suppressWarnings(val <- rgrass::readRAST(l)) # proj warnings suppressed
 		raster::raster(val)})
 	if(length(layers) > 1) {
 		ras = raster::stack(ras)

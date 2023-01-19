@@ -58,6 +58,7 @@
 #' @param x A single vector layer name to read
 #' @keywords internal
 .read_rasters = function(layers, file) {
+	suppressWarnings(val <- rgrass::read_RAST(l))
 	ras = sapply(layers, function(l) {
 		raster::raster(val)})
 	if(length(layers) > 1) {
